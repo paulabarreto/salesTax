@@ -29,14 +29,20 @@ function calculateSalesTax(salesData, taxRates) {
   const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
   for(var i = 0; i < salesData.length; i++){
-    if(!companies[salesData[i].name]){
-      var s = (salesData[i].sales).reduce(reducer);
-      companies[salesData[i].name] = {totalSales: s, totalTaxes: 2};
+    var currentCompany = salesData[i];
+    var currentCompanyName = currentCompany.name;
+    if(!companies[currentCompanyName]){
+      var s = (currentCompany.sales).reduce(reducer);
+      var totalTax = taxRates[currentCompany.province] * s;
+      companies[currentCompanyName] = {totalSales: s, totalTax: totalTax};
     } else {
-      var s2 = (salesData[i].sales).reduce(reducer);
-      companies[salesData[i].name].totalSales += s2;
+      var s2 = (currentCompany.sales).reduce(reducer);
+      var totalTax2 = taxRates[currentCompany.province] * s2;
+      companies[currentCompanyName].totalSales += s2;
+      companies[currentCompanyName].totalTax += totalTax2;
     }
   }
+
 
   return companies;
   //var result = salesData.sales.reduce((a,b) => a + b);
